@@ -38,11 +38,17 @@ public class InputManager : MonoBehaviour, IMessageReceiver
         if (starClickedMessage != null)
         {
             Star clickedOn = starClickedMessage.star;
+            Star.Owner owner = starClickedMessage.owner;
             Debug.Log("Star was clicked: " + clickedOn);
 
             switch (starSelectionState)
             {
                 case StarSelectionState.Unselected:
+                    if (owner != Star.Owner.player0)
+                    {
+                        Debug.Log("Star does not belong to player!");
+                    }
+                    else
                     {
                         selectedSender = clickedOn;
                         starSelectionState = StarSelectionState.SenderSelected;
@@ -51,9 +57,9 @@ public class InputManager : MonoBehaviour, IMessageReceiver
                         starSelectedMessage.star = selectedSender;
                         MessageManager.SendMessage(starSelectedMessage);
 
-                        Debug.Log("Star" + clickedOn + " selected!");
-                        break;
+                        Debug.Log("Star " + clickedOn + " selected!");
                     }
+                    break;
 
                 case StarSelectionState.SenderSelected:
                     {

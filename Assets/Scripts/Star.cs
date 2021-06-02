@@ -6,7 +6,17 @@ using TMPro;
 public class Star : MonoBehaviour, IMessageReceiver, IUnitTransferable
 {
     [SerializeField] private int units = 0;
+    [SerializeField] private Owner owner;
     [SerializeField] private GameObject selectedOutline = null;
+
+    public enum Owner
+    {
+        player0,
+        player1,
+        player2,
+        player3,
+        neutral,
+    }
 
     public int Units
     {
@@ -42,6 +52,7 @@ public class Star : MonoBehaviour, IMessageReceiver, IUnitTransferable
     {
         var message = MessageProvider.GetMessage<StarClickedMessage>();
         message.star = this;
+        message.owner = owner;
         MessageManager.SendMessage(message);
     }
 

@@ -7,4 +7,5 @@ using System.Threading.Tasks;
 public class StarSelectedMessage : Message
 {
 	public Star star;
+	public Star.Owner owner;
 }
