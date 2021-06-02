@@ -34,6 +34,11 @@ public class Star : MonoBehaviour, IMessageReceiver
         SetColour();
     }
 
+    public Owner getOwner()
+    {
+        return owner;
+    }
+
     public int Units
     {
         get { return units; }
@@ -111,7 +116,30 @@ public class Star : MonoBehaviour, IMessageReceiver
             }
             if (unitTransferMessage.receiver == this)
             {
-                IncreaseUnits(unitTransferMessage.amount);
+                if (unitTransferMessage.owner == this.owner)
+                {
+                    IncreaseUnits(unitTransferMessage.amount);
+                } else
+                {
+                    int diff = this.units - unitTransferMessage.amount;
+
+                    if (diff > 0)
+                    {
+                        DecreaseUnits(unitTransferMessage.amount);
+                    }
+                    else if (diff < 0)
+                    {
+                        SetOwner(unitTransferMessage.owner);
+                        this.Units = (-diff);
+                    }
+                    else
+                    {
+                        DecreaseUnits(unitTransferMessage.amount);
+                        SetOwner(Owner.neutral);
+                    }
+                        
+                }
+                
             }
         }
 
