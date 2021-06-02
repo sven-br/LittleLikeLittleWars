@@ -39,26 +39,30 @@ public class Star : MonoBehaviour, IMessageReceiver, IUnitTransferable
 
     private void IncreaseUnits(int amount)
     {
-        this.units += amount;
+        Units += amount;
         Debug.Log("star received" + amount + " units");
     }
 
     private void DecreaseUnits(int amount)
     {
-        this.units -= amount;
+        Units -= amount;
         Debug.Log("star lost" + amount + " units");
     }
 
     void IMessageReceiver.MessageReceived(Message message)
     {
-        
         if (message.GetType() == typeof(UnitTransferMessage))
         {
             var unitTransferMessage = (UnitTransferMessage)message;
+            if ((Object)unitTransferMessage.sender == this)
+            {
+                DecreaseUnits(unitTransferMessage.amount);
+            }
             if ((Object)unitTransferMessage.receiver == this)
             {
-                Debug.Log("star received a unit");
+                IncreaseUnits(unitTransferMessage.amount);
             }
+            
         }
     }
 }
