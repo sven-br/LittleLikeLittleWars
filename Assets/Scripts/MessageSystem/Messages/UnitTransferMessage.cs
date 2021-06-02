@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 public class UnitTransferMessage : Message
 {
-	public IUnitTransferable sender;
-	public IUnitTransferable receiver;
+	public Star sender;
+	public Star receiver;
 	public int amount;
 }

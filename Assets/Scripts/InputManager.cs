@@ -63,15 +63,18 @@ public class InputManager : MonoBehaviour, IMessageReceiver
 
                 case StarSelectionState.SenderSelected:
                     {
-                        var msg = MessageProvider.GetMessage<UnitTransferMessage>();
-                        msg.sender = selectedSender;
-                        msg.receiver = clickedOn;
-                        msg.amount = (int)(selectedSender.Units * sendPercentage);
-                        MessageManager.SendMessage(msg);
-                        starSelectionState = StarSelectionState.Unselected;
+                        if (selectedSender.HasNeighbor(clickedOn))
+                        {
+                            var msg = MessageProvider.GetMessage<UnitTransferMessage>();
+                            msg.sender = selectedSender;
+                            msg.receiver = clickedOn;
+                            msg.amount = (int)(selectedSender.Units * sendPercentage);
+                            MessageManager.SendMessage(msg);
+                            starSelectionState = StarSelectionState.Unselected;
 
-                        var starUnselectedMessage = MessageProvider.GetMessage<AllStarsUnselectedMessage>();
-                        MessageManager.SendMessage(starUnselectedMessage);
+                            var starUnselectedMessage = MessageProvider.GetMessage<AllStarsUnselectedMessage>();
+                            MessageManager.SendMessage(starUnselectedMessage);
+                        }
 
                         break;
                     }

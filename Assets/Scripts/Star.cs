@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
-public class Star : MonoBehaviour, IMessageReceiver, IUnitTransferable
+public class Star : MonoBehaviour, IMessageReceiver
 {
     [SerializeField] private int units = 0;
     [SerializeField] private Owner owner = Owner.neutral;
@@ -46,6 +46,15 @@ public class Star : MonoBehaviour, IMessageReceiver, IUnitTransferable
         renderer.color = colormapping[owner];
     }
 
+    public bool HasNeighbor(Star other)
+    {
+        foreach (var neighbor in neighbors)
+        {
+            if (neighbor == other)
+                return true;
+        }
+        return false;
+    }
     void Start()
     {
         UpdateText();
@@ -96,11 +105,11 @@ public class Star : MonoBehaviour, IMessageReceiver, IUnitTransferable
         if (message.GetType() == typeof(UnitTransferMessage))
         {
             var unitTransferMessage = (UnitTransferMessage)message;
-            if ((Object)unitTransferMessage.sender == this)
+            if (unitTransferMessage.sender == this)
             {
                 DecreaseUnits(unitTransferMessage.amount);
             }
-            if ((Object)unitTransferMessage.receiver == this)
+            if (unitTransferMessage.receiver == this)
             {
                 IncreaseUnits(unitTransferMessage.amount);
             }
