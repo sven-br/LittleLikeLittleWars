@@ -43,20 +43,31 @@ public class InputManager : MonoBehaviour, IMessageReceiver
             switch (starSelectionState)
             {
                 case StarSelectionState.Unselected:
-                    selectedSender = clickedOn;
-                    starSelectionState = StarSelectionState.SenderSelected;
-                    Debug.Log("Star" + clickedOn + " selected!");
-                    break;
+                    {
+                        selectedSender = clickedOn;
+                        starSelectionState = StarSelectionState.SenderSelected;
+
+                        var starSelectedMessage = MessageProvider.GetMessage<StarSelectedMessage>();
+                        starSelectedMessage.star = selectedSender;
+                        MessageManager.SendMessage(starSelectedMessage);
+
+                        Debug.Log("Star" + clickedOn + " selected!");
+                        break;
+                    }
 
                 case StarSelectionState.SenderSelected:
                     {
-                    var msg = MessageProvider.GetMessage<UnitTransferMessage>();
-                    msg.sender = selectedSender;
-                    msg.receiver = clickedOn;
-                    msg.amount = (int)(selectedSender.Units * sendPercentage);
-                    MessageManager.SendMessage(msg);
-                    starSelectionState = StarSelectionState.Unselected;
-                    break;
+                        var msg = MessageProvider.GetMessage<UnitTransferMessage>();
+                        msg.sender = selectedSender;
+                        msg.receiver = clickedOn;
+                        msg.amount = (int)(selectedSender.Units * sendPercentage);
+                        MessageManager.SendMessage(msg);
+                        starSelectionState = StarSelectionState.Unselected;
+
+                        var starUnselectedMessage = MessageProvider.GetMessage<AllStarsUnselectedMessage>();
+                        MessageManager.SendMessage(starUnselectedMessage);
+
+                        break;
                     }
                     
                 default:

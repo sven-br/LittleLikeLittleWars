@@ -6,6 +6,7 @@ using TMPro;
 public class Star : MonoBehaviour, IMessageReceiver, IUnitTransferable
 {
     [SerializeField] private int units = 0;
+    [SerializeField] private GameObject selectedOutline;
 
     public int Units
     {
@@ -13,11 +14,12 @@ public class Star : MonoBehaviour, IMessageReceiver, IUnitTransferable
         private set { units = value; UpdateText(); }
     }
 
-
     void Start()
     {
         UpdateText();
         MessageManager.StartReceivingMessage<UnitTransferMessage>(this);
+        MessageManager.StartReceivingMessage<StarSelectedMessage>(this);
+        MessageManager.StartReceivingMessage<AllStarsUnselectedMessage>(this);
     }
 
     void Update()
@@ -28,6 +30,11 @@ public class Star : MonoBehaviour, IMessageReceiver, IUnitTransferable
     {
         var text = GetComponentInChildren<TextMeshProUGUI>();
         text.text = Units.ToString();
+    }
+
+    void UpdateSelected(bool selected)
+    {
+        selectedOutline.SetActive(selected);
     }
 
     void OnMouseDown()
@@ -62,7 +69,21 @@ public class Star : MonoBehaviour, IMessageReceiver, IUnitTransferable
             {
                 IncreaseUnits(unitTransferMessage.amount);
             }
-            
+        }
+
+        if (message.GetType() == typeof(StarSelectedMessage))
+        {
+            var starSelectedMessage = (StarSelectedMessage)message;
+            if ((Object)starSelectedMessage.star == this)
+            {
+                UpdateSelected(true);
+            }
+        }
+
+        if (message.GetType() == typeof(AllStarsUnselectedMessage))
+        {
+            var allStarsUnselectedMessage = (AllStarsUnselectedMessage)message;
+            UpdateSelected(false);
         }
     }
 }
