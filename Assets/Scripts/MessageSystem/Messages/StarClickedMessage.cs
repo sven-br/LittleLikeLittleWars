@@ -6,5 +6,5 @@ using System.Threading.Tasks;
 
 public class StarClickedMessage : Message
 {
-	public IUnitTransferable star;
+	public Star star;
 }
