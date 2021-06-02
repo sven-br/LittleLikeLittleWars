@@ -1,21 +1,34 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class Star : MonoBehaviour, IMessageReceiver, IUnitTransferable
 {
     [SerializeField] private int units = 0;
 
+    private int Units
+    {
+        get { return units; }
+        set { units = value; UpdateText(); }
+    }
+
+
     void Start()
     {
+        UpdateText();
         MessageManager.StartReceivingMessage<UnitTransferMessage>(this);
     }
 
     void Update()
     {
-        var message = MessageProvider.GetMessage<UnitTransferMessage>();
-        message.sender = this;
-        MessageManager.SendMessage(message);
+        Units++;
+    }
+
+    void UpdateText()
+    {
+        var text = GetComponentInChildren<TextMeshProUGUI>();
+        text.text = Units.ToString();
     }
 
     void OnMouseDown()
