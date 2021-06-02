@@ -24,6 +24,6 @@ local.properties
 *.sln
 *.pidb
 *.userprefs
-/*/.vs
+.vs
 .vsconfig
 VRog-git.userprefs
