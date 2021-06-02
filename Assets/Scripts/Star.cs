@@ -6,7 +6,7 @@ using TMPro;
 public class Star : MonoBehaviour, IMessageReceiver, IUnitTransferable
 {
     [SerializeField] private int units = 0;
-    [SerializeField] private Owner owner;
+    [SerializeField] private Owner owner = Owner.neutral;
     [SerializeField] private GameObject selectedOutline = null;
 
     public enum Owner

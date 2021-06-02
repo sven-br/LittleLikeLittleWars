@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public class StarClickedMessage : Message
+public class StarSelectedMessage : Message
 {
 	public Star star;
 }
