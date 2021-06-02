@@ -19,7 +19,7 @@ public class InputManager : MonoBehaviour, IMessageReceiver
     private float SendPercentage
     {
         get { return sendPercentage; }
-        set { if (value > 0 && value <= 1) sendPercentage = value; else Debug.Log("Illegal value for sendPercentage!") }
+        set { if (value > 0 && value <= 1) sendPercentage = value; else Debug.Log("Illegal value for sendPercentage!"); }
     }
 
     void Start()
@@ -38,14 +38,22 @@ public class InputManager : MonoBehaviour, IMessageReceiver
         if (starClickedMessage != null)
         {
             Star clickedOn = starClickedMessage.star;
+            Star.Owner owner = starClickedMessage.owner;
             Debug.Log("Star was clicked: " + clickedOn);
 
             switch (starSelectionState)
             {
                 case StarSelectionState.Unselected:
-                    selectedSender = clickedOn;
-                    starSelectionState = StarSelectionState.SenderSelected;
-                    Debug.Log("Star" + clickedOn + " selected!");
+                    if (owner != Star.Owner.player0)
+                    {
+                        Debug.Log("Star does not belong to player!");
+                    }
+                    else
+                    {
+                        selectedSender = clickedOn;
+                        starSelectionState = StarSelectionState.SenderSelected;
+                        Debug.Log("Star " + clickedOn + " selected!");
+                    }
                     break;
 
                 case StarSelectionState.SenderSelected:

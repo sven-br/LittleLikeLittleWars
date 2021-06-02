@@ -6,6 +6,16 @@ using TMPro;
 public class Star : MonoBehaviour, IMessageReceiver, IUnitTransferable
 {
     [SerializeField] private int units = 0;
+    [SerializeField] private Owner owner;
+
+    public enum Owner
+    {
+        player0,
+        player1,
+        player2,
+        player3,
+        neutral,
+    }
 
     public int Units
     {
@@ -34,19 +44,20 @@ public class Star : MonoBehaviour, IMessageReceiver, IUnitTransferable
     {
         var message = MessageProvider.GetMessage<StarClickedMessage>();
         message.star = this;
+        message.owner = owner;
         MessageManager.SendMessage(message);
     }
 
     private void IncreaseUnits(int amount)
     {
         Units += amount;
-        Debug.Log("star received" + amount + " units");
+        Debug.Log("star received " + amount + " units");
     }
 
     private void DecreaseUnits(int amount)
     {
         Units -= amount;
-        Debug.Log("star lost" + amount + " units");
+        Debug.Log("star lost " + amount + " units");
     }
 
     void IMessageReceiver.MessageReceived(Message message)
