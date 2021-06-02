@@ -19,7 +19,7 @@ public class InputManager : MonoBehaviour, IMessageReceiver
     private float SendPercentage
     {
         get { return sendPercentage; }
-        set { if (value > 0 && value <= 1) sendPercentage = value; else Debug.Log("Illegal value for sendPercentage!") }
+        set { if (value > 0 && value <= 1) sendPercentage = value; else Debug.Log("Illegal value for sendPercentage!"); }
     }
 
     void Start()
