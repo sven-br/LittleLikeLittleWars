@@ -6,7 +6,7 @@ using TMPro;
 public class Star : MonoBehaviour, IMessageReceiver, IUnitTransferable
 {
     [SerializeField] private int units = 0;
-    [SerializeField] private GameObject selectedOutline;
+    [SerializeField] private GameObject selectedOutline = null;
 
     public int Units
     {
@@ -20,6 +20,7 @@ public class Star : MonoBehaviour, IMessageReceiver, IUnitTransferable
         MessageManager.StartReceivingMessage<UnitTransferMessage>(this);
         MessageManager.StartReceivingMessage<StarSelectedMessage>(this);
         MessageManager.StartReceivingMessage<AllStarsUnselectedMessage>(this);
+        MessageManager.StartReceivingMessage<TickMessage>(this);
     }
 
     void Update()
@@ -47,13 +48,13 @@ public class Star : MonoBehaviour, IMessageReceiver, IUnitTransferable
     private void IncreaseUnits(int amount)
     {
         Units += amount;
-        Debug.Log("star received" + amount + " units");
+        Debug.Log("star received " + amount + " units");
     }
 
     private void DecreaseUnits(int amount)
     {
         Units -= amount;
-        Debug.Log("star lost" + amount + " units");
+        Debug.Log("star lost " + amount + " units");
     }
 
     void IMessageReceiver.MessageReceived(Message message)
@@ -84,6 +85,11 @@ public class Star : MonoBehaviour, IMessageReceiver, IUnitTransferable
         {
             var allStarsUnselectedMessage = (AllStarsUnselectedMessage)message;
             UpdateSelected(false);
+        }
+
+        if (message.GetType() == typeof(TickMessage))
+        {
+            IncreaseUnits(1);
         }
     }
 }
