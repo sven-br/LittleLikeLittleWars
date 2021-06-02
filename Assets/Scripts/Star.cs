@@ -122,7 +122,8 @@ public class Star : MonoBehaviour, IMessageReceiver, IUnitTransferable
 
         if (message.GetType() == typeof(TickMessage))
         {
-            IncreaseUnits(1);
+            if (owner != Owner.neutral)
+                IncreaseUnits(1);
         }
     }
 }
