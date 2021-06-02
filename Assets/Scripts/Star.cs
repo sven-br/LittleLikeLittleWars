@@ -63,11 +63,12 @@ public class Star : MonoBehaviour, IMessageReceiver
     void Start()
     {
         UpdateText();
+        SetColour();
+
         MessageManager.StartReceivingMessage<UnitTransferMessage>(this);
         MessageManager.StartReceivingMessage<StarSelectedMessage>(this);
         MessageManager.StartReceivingMessage<AllStarsUnselectedMessage>(this);
         MessageManager.StartReceivingMessage<TickMessage>(this);
-        SetColour();
     }
 
     void Update()
