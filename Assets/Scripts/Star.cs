@@ -10,6 +10,15 @@ public class Star : MonoBehaviour, IMessageReceiver, IUnitTransferable
     [SerializeField] private GameObject selectedOutline = null;
     [SerializeField] private Star[] neighbors = null;
 
+    Dictionary<Owner, Color> colormapping = new Dictionary<Owner, Color>()
+{
+    { Owner.player0, Color.red },
+    { Owner.player1, Color.yellow },
+    { Owner.player2, Color.blue },
+    { Owner.player3, Color.green },
+    { Owner.neutral, Color.grey }
+};
+
     public enum Owner
     {
         player0,
@@ -19,10 +28,22 @@ public class Star : MonoBehaviour, IMessageReceiver, IUnitTransferable
         neutral,
     }
 
+    private void SetOwner(Owner owner)
+    {
+        this.owner = owner;
+        SetColour();
+    }
+
     public int Units
     {
         get { return units; }
         private set { units = value; UpdateText(); }
+    }
+
+    private void SetColour()
+    {
+        SpriteRenderer renderer = GetComponent<SpriteRenderer>();
+        renderer.color = colormapping[owner];
     }
 
     void Start()
@@ -32,6 +53,7 @@ public class Star : MonoBehaviour, IMessageReceiver, IUnitTransferable
         MessageManager.StartReceivingMessage<StarSelectedMessage>(this);
         MessageManager.StartReceivingMessage<AllStarsUnselectedMessage>(this);
         MessageManager.StartReceivingMessage<TickMessage>(this);
+        SetColour();
     }
 
     void Update()
