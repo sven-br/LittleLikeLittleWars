@@ -8,13 +8,20 @@ public class Star : MonoBehaviour, IMessageReceiver, IUnitTransferable
 
     void Start()
     {
-        
+        MessageManager.StartReceivingMessage<UnitTransferMessage>(this);
     }
 
     void Update()
     {
         var message = MessageProvider.GetMessage<UnitTransferMessage>();
         message.sender = this;
+        MessageManager.SendMessage(message);
+    }
+
+    void OnMouseDown()
+    {
+        var message = MessageProvider.GetMessage<StarClickedMessage>();
+        message.star = this;
         MessageManager.SendMessage(message);
     }
 
