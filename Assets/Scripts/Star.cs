@@ -8,6 +8,7 @@ public class Star : MonoBehaviour, IMessageReceiver, IUnitTransferable
     [SerializeField] private int units = 0;
     [SerializeField] private Owner owner = Owner.neutral;
     [SerializeField] private GameObject selectedOutline = null;
+    [SerializeField] private Star[] neighbors = null;
 
     public enum Owner
     {
@@ -102,6 +103,28 @@ public class Star : MonoBehaviour, IMessageReceiver, IUnitTransferable
         {
             if (owner != Owner.neutral)
                 IncreaseUnits(1);
+        }
+    }
+
+    void OnDrawGizmos()
+    {
+        foreach (var neighbor in neighbors)
+        {
+            if (neighbor != null)
+            {
+                var from = transform.position;
+                var to = neighbor.transform.position;
+                var dir = (to - from).normalized;
+                var right = Vector3.Cross(dir, new Vector3(0, 0, 1));
+                var offset = right.normalized * 0.1f;
+
+                from += offset;
+                to += offset;
+
+                Gizmos.color = Color.yellow;
+                Gizmos.DrawLine(from, to);
+                Gizmos.DrawLine(to, to + offset - dir);
+            }
         }
     }
 }
