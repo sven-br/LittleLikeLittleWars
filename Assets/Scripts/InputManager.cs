@@ -14,6 +14,14 @@ public class InputManager : MonoBehaviour, IMessageReceiver
 
     Star selectedSender;
 
+    private float sendPercentage = 1;
+
+    private float SendPercentage
+    {
+        get { return sendPercentage; }
+        set { if (value > 0 && value <= 1) sendPercentage = value; else Debug.Log("Illegal value for sendPercentage!") }
+    }
+
     void Start()
     {
         MessageManager.StartReceivingMessage<StarClickedMessage>(this);
@@ -45,6 +53,7 @@ public class InputManager : MonoBehaviour, IMessageReceiver
                     var msg = MessageProvider.GetMessage<UnitTransferMessage>();
                     msg.sender = selectedSender;
                     msg.receiver = clickedOn;
+                    msg.amount = (int)(selectedSender.Units * sendPercentage);
                     MessageManager.SendMessage(msg);
                     starSelectionState = StarSelectionState.Unselected;
                     break;

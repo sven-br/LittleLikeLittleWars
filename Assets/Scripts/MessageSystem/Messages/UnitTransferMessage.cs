@@ -8,4 +8,5 @@ public class UnitTransferMessage : Message
 {
 	public IUnitTransferable sender;
 	public IUnitTransferable receiver;
+	public int amount;
 }

@@ -7,10 +7,10 @@ public class Star : MonoBehaviour, IMessageReceiver, IUnitTransferable
 {
     [SerializeField] private int units = 0;
 
-    private int Units
+    public int Units
     {
         get { return units; }
-        set { units = value; UpdateText(); }
+        private set { units = value; UpdateText(); }
     }
 
 
