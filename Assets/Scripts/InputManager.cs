@@ -69,6 +69,7 @@ public class InputManager : MonoBehaviour, IMessageReceiver
                             msg.sender = selectedSender;
                             msg.receiver = clickedOn;
                             msg.amount = (int)(selectedSender.Units * sendPercentage);
+                            msg.owner = selectedSender.getOwner();
                             MessageManager.SendMessage(msg);
                             starSelectionState = StarSelectionState.Unselected;
 
