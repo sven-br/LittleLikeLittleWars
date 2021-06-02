@@ -8,13 +8,11 @@ public class InputManager : MonoBehaviour, IMessageReceiver
     {
         Unselected,
         SenderSelected,
-        SenderAndReceiverSelected,
     }
 
     StarSelectionState starSelectionState = StarSelectionState.Unselected;
 
     Star selectedSender;
-    Star selectedReceiver;
 
     void Start()
     {
@@ -31,8 +29,33 @@ public class InputManager : MonoBehaviour, IMessageReceiver
         var starClickedMessage = (StarClickedMessage)message;
         if (starClickedMessage != null)
         {
-            var star = starClickedMessage.star;
-            Debug.Log("Star was clicked: " + star);
+            Star clickedOn = starClickedMessage.star;
+            Debug.Log("Star was clicked: " + clickedOn);
+
+            switch (starSelectionState)
+            {
+                case StarSelectionState.Unselected:
+                    selectedSender = clickedOn;
+                    starSelectionState = StarSelectionState.SenderSelected;
+                    Debug.Log("Star" + clickedOn + " selected!");
+                    break;
+
+                case StarSelectionState.SenderSelected:
+                    {
+                    var msg = MessageProvider.GetMessage<UnitTransferMessage>();
+                    msg.sender = selectedSender;
+                    msg.receiver = clickedOn;
+                    MessageManager.SendMessage(msg);
+                    starSelectionState = StarSelectionState.Unselected;
+                    break;
+                    }
+                    
+                default:
+                    Debug.Log("Nothing happened upon click in the current input-state!");
+                    break;
+            }
+
+
             Debug.Log("Current StarSelectedState: " + starSelectionState);
         }
     }
