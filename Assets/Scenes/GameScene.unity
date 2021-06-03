@@ -953,6 +953,11 @@ PrefabInstance:
       propertyPath: neighbors.Array.data[1]
       value: 
       objectReference: {fileID: 2101878255}
+    - target: {fileID: 1557573307234229444, guid: c5bf54946b9b3da469f02869bb8b5f3e,
+        type: 3}
+      propertyPath: m_UseFullKinematicContacts
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c5bf54946b9b3da469f02869bb8b5f3e, type: 3}
 --- !u!1001 &1331318019
