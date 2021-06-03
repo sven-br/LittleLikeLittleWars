@@ -8,6 +8,8 @@ public class Star : MonoBehaviour, IMessageReceiver
     [SerializeField] private int units = 0;
     [SerializeField] private StarOwner owner = StarOwner.neutral;
     [SerializeField] private GameObject selectedOutline = null;
+    [SerializeField] private SpawnInterval interval = SpawnInterval.medium;
+    private int tickcount = 0;
     private List<Star> neighbors;
     private bool registered = false;
 
@@ -19,6 +21,13 @@ public class Star : MonoBehaviour, IMessageReceiver
     { StarOwner.player3, Color.green },
     { StarOwner.neutral, Color.grey }
 };
+
+    public enum SpawnInterval
+    {
+        fast = 2,
+        medium,
+        slow,
+    }
 
     public enum StarOwner
     {
@@ -186,7 +195,15 @@ public class Star : MonoBehaviour, IMessageReceiver
         else if (message is TickMessage)
         {
             if (owner != StarOwner.neutral)
-                IncreaseUnits(1);
+            {
+                tickcount++;
+                    if (tickcount == (int)interval)
+                    {
+                        IncreaseUnits(1);
+                        tickcount = 0;
+                    }
+               
+            }
         }
     }
 }
