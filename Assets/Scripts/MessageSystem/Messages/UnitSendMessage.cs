@@ -9,5 +9,5 @@ public class UnitSendMessage : Message
 	public Star sender;
 	public Star receiver;
 	public int amount;
-	public Star.StarOwner owner;
+	public ObjectOwner owner;
 }

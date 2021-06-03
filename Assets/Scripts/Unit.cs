@@ -5,13 +5,13 @@ using UnityEngine;
 public class Unit : MonoBehaviour
 {
     public Vector2 Direction { get; set; }
-    public Star.StarOwner Owner { get; set; }
+    public ObjectOwner Owner { get; set; }
     public Star Sender { get; set; }
     public int Amount { get; set; }
 
     void Start()
     {
-        
+        SetColour();
     }
 
     void Update()
@@ -44,5 +44,10 @@ public class Unit : MonoBehaviour
 
             }
         }
+    }
+    private void SetColour()
+    {
+        SpriteRenderer renderer = GetComponent<SpriteRenderer>();
+        renderer.color = ColourMapping.colormapping[Owner];
     }
 }
