@@ -6,21 +6,12 @@ using TMPro;
 public class Star : MonoBehaviour, IMessageReceiver
 {
     [SerializeField] private int units = 0;
-    [SerializeField] private StarOwner owner = StarOwner.neutral;
+    [SerializeField] private ObjectOwner owner = ObjectOwner.neutral;
     [SerializeField] private GameObject selectedOutline = null;
     [SerializeField] private SpawnInterval interval = SpawnInterval.medium;
     private int tickcount = 0;
     private List<Star> neighbors;
     private bool registered = false;
-
-    Dictionary<StarOwner, Color> colormapping = new Dictionary<StarOwner, Color>()
-{
-    { StarOwner.player0, Color.red },
-    { StarOwner.player1, Color.yellow },
-    { StarOwner.player2, Color.blue },
-    { StarOwner.player3, Color.green },
-    { StarOwner.neutral, Color.grey }
-};
 
     public enum SpawnInterval
     {
@@ -29,16 +20,7 @@ public class Star : MonoBehaviour, IMessageReceiver
         slow,
     }
 
-    public enum StarOwner
-    {
-        player0,
-        player1,
-        player2,
-        player3,
-        neutral,
-    }
-
-    public StarOwner Owner
+    public ObjectOwner Owner
     {
         get { return owner; }
         private set
@@ -60,7 +42,7 @@ public class Star : MonoBehaviour, IMessageReceiver
     private void SetColour()
     {
         SpriteRenderer renderer = GetComponent<SpriteRenderer>();
-        renderer.color = colormapping[owner];
+        renderer.color = ColourMapping.colormapping[owner];
     }
 
     public bool HasNeighbor(Star other)
@@ -81,6 +63,7 @@ public class Star : MonoBehaviour, IMessageReceiver
 
         MessageManager.StartReceivingMessage<RegisterLinkMessage>(this);
         MessageManager.StartReceivingMessage<UnitReceiveMessage>(this);
+        MessageManager.StartReceivingMessage<UnitSendMessage>(this);
         MessageManager.StartReceivingMessage<StarSelectedMessage>(this);
         MessageManager.StartReceivingMessage<AllStarsUnselectedMessage>(this);
         MessageManager.StartReceivingMessage<TickMessage>(this);
@@ -166,12 +149,18 @@ public class Star : MonoBehaviour, IMessageReceiver
                     else
                     {
                         DecreaseUnits(unitReceiveMessage.amount);
-                        Owner = StarOwner.neutral;
+                        Owner = ObjectOwner.neutral;
                     }
                         
                 }
                 
             }
+        }
+
+        else if (message is UnitSendMessage)
+        {
+            var unitSendMessage = message as UnitSendMessage;
+            if (unitSendMessage.sender == this) DecreaseUnits(unitSendMessage.amount);
         }
 
         else if (message is StarSelectedMessage)
@@ -191,7 +180,7 @@ public class Star : MonoBehaviour, IMessageReceiver
 
         else if (message is TickMessage)
         {
-            if (owner != StarOwner.neutral)
+            if (owner != ObjectOwner.neutral)
             {
                 tickcount++;
                     if (tickcount == (int)interval)

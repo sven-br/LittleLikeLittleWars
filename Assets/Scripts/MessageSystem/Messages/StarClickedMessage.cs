@@ -7,5 +7,5 @@ using System.Threading.Tasks;
 public class StarClickedMessage : Message
 {
 	public Star star;
-	public Star.StarOwner owner;
+	public ObjectOwner owner;
 }
