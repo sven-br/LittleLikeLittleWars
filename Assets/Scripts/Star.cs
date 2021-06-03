@@ -8,7 +8,7 @@ public class Star : MonoBehaviour, IMessageReceiver
     [SerializeField] private int units = 0;
     [SerializeField] private StarOwner owner = StarOwner.neutral;
     [SerializeField] private GameObject selectedOutline = null;
-    [SerializeField] private Star[] neighbors = null;
+    private List<Star> neighbors;
     private bool registered = false;
 
     Dictionary<StarOwner, Color> colormapping = new Dictionary<StarOwner, Color>()
@@ -27,20 +27,6 @@ public class Star : MonoBehaviour, IMessageReceiver
         player2,
         player3,
         neutral,
-    }
-
-    private void SetOwner(StarOwner owner)
-    {
-        this.owner = owner;
-        SetColour();
-
-        var message = MessageProvider.GetMessage<StarOwnerChangedMessage>();
-        MessageManager.SendMessage(message);
-    }
-
-    public StarOwner getOwner()
-    {
-        return owner;
     }
 
     public StarOwner Owner
@@ -79,9 +65,12 @@ public class Star : MonoBehaviour, IMessageReceiver
     }
     void Start()
     {
+        neighbors = new List<Star>();
+
         UpdateText();
         SetColour();
 
+        MessageManager.StartReceivingMessage<RegisterLinkMessage>(this);
         MessageManager.StartReceivingMessage<UnitTransferMessage>(this);
         MessageManager.StartReceivingMessage<StarSelectedMessage>(this);
         MessageManager.StartReceivingMessage<AllStarsUnselectedMessage>(this);
@@ -121,18 +110,28 @@ public class Star : MonoBehaviour, IMessageReceiver
     private void IncreaseUnits(int amount)
     {
         Units += amount;
-        Debug.Log("star received " + amount + " units");
     }
 
     private void DecreaseUnits(int amount)
     {
         Units -= amount;
-        Debug.Log("star lost " + amount + " units");
     }
 
     void IMessageReceiver.MessageReceived(Message message)
     {
-        if (message is UnitTransferMessage)
+        if (message is RegisterLinkMessage)
+        {
+            var registerLinkMessage = message as RegisterLinkMessage;
+            var link = registerLinkMessage.link;
+            var neighbor = link.GetOtherStar(this);
+
+            if (neighbor != null)
+            {
+                neighbors.Add(neighbor);
+            }
+        }
+
+        else if (message is UnitTransferMessage)
         {
             var unitTransferMessage = message as UnitTransferMessage;
             if (unitTransferMessage.sender == this)
@@ -155,13 +154,13 @@ public class Star : MonoBehaviour, IMessageReceiver
                     }
                     else if (diff < 0)
                     {
-                        SetOwner(unitTransferMessage.owner);
+                        Owner = unitTransferMessage.owner;
                         this.Units = (-diff);
                     }
                     else
                     {
                         DecreaseUnits(unitTransferMessage.amount);
-                        SetOwner(StarOwner.neutral);
+                        Owner = StarOwner.neutral;
                     }
                         
                 }

@@ -11,22 +11,24 @@ public class GameManager : MonoBehaviour, IMessageReceiver
     {
         stars = new List<Star>();
         MessageManager.StartReceivingMessage<RegisterStarMessage>(this);
+        MessageManager.StartReceivingMessage<StarOwnerChangedMessage>(this);
     }
 
     void CheckWinCondition()
     {
-        var owner = stars[0].getOwner();
+        Debug.Log("CheckWinCondition");
+        var owner = stars[0].Owner;
 
         foreach (var star in stars)
         {
-            if (star.getOwner() != owner)
+            if (star.Owner != owner)
             {
                 return;
             }
         }
 
         var activeScene = SceneManager.GetActiveScene();
-        SceneManager.LoadScene(activeScene.name);
+        LoadScene(activeScene.name);
     }
 
     void IMessageReceiver.MessageReceived(Message message)
@@ -41,5 +43,11 @@ public class GameManager : MonoBehaviour, IMessageReceiver
         {
             CheckWinCondition();
         }
+    }
+
+    void LoadScene(string name)
+    {
+        MessageManager.Clear();
+        SceneManager.LoadScene(name);
     }
 }

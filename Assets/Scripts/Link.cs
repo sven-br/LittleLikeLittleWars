@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class Link : MonoBehaviour
 {
-    [SerializeField] private Star star0;
-    [SerializeField] private Star star1;
+    [SerializeField] private Star star0 = null;
+    [SerializeField] private Star star1 = null;
     private bool registered = false;
 
     void Start()
@@ -22,6 +22,15 @@ public class Link : MonoBehaviour
             message.link = this;
             MessageManager.SendMessage(message);
         }
+    }
+
+    public Star GetOtherStar(Star that)
+    {
+        if (that == star0)
+            return star1;
+        if (that == star1)
+            return star0;
+        return null;
     }
 
     void OnDrawGizmos()
