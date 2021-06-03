@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public class UnitTransferMessage : Message
+public class UnitSendMessage : Message
 {
 	public Star sender;
 	public Star receiver;

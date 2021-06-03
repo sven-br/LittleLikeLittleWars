@@ -80,7 +80,7 @@ public class Star : MonoBehaviour, IMessageReceiver
         SetColour();
 
         MessageManager.StartReceivingMessage<RegisterLinkMessage>(this);
-        MessageManager.StartReceivingMessage<UnitTransferMessage>(this);
+        MessageManager.StartReceivingMessage<UnitReceiveMessage>(this);
         MessageManager.StartReceivingMessage<StarSelectedMessage>(this);
         MessageManager.StartReceivingMessage<AllStarsUnselectedMessage>(this);
         MessageManager.StartReceivingMessage<TickMessage>(this);
@@ -140,35 +140,32 @@ public class Star : MonoBehaviour, IMessageReceiver
             }
         }
 
-        else if (message is UnitTransferMessage)
+        else if (message is UnitReceiveMessage)
         {
-            var unitTransferMessage = message as UnitTransferMessage;
-            if (unitTransferMessage.sender == this)
+            var unitReceiveMessage = message as UnitReceiveMessage;
+            
+            if (unitReceiveMessage.receiver == this)
             {
-                DecreaseUnits(unitTransferMessage.amount);
-            }
-            if (unitTransferMessage.receiver == this)
-            {
-                if (unitTransferMessage.owner == this.owner)
+                if (unitReceiveMessage.owner == this.owner)
                 {
-                    IncreaseUnits(unitTransferMessage.amount);
+                    IncreaseUnits(unitReceiveMessage.amount);
                 }
                 else
                 {
-                    int diff = this.units - unitTransferMessage.amount;
+                    int diff = units - unitReceiveMessage.amount;
 
                     if (diff > 0)
                     {
-                        DecreaseUnits(unitTransferMessage.amount);
+                        DecreaseUnits(unitReceiveMessage.amount);
                     }
                     else if (diff < 0)
                     {
-                        Owner = unitTransferMessage.owner;
-                        this.Units = (-diff);
+                        Owner = unitReceiveMessage.owner;
+                        Units = (-diff);
                     }
                     else
                     {
-                        DecreaseUnits(unitTransferMessage.amount);
+                        DecreaseUnits(unitReceiveMessage.amount);
                         Owner = StarOwner.neutral;
                     }
                         

@@ -65,7 +65,7 @@ public class InputManager : MonoBehaviour, IMessageReceiver
                     {
                         if (selectedSender.HasNeighbor(clickedOn))
                         {
-                            var msg = MessageProvider.GetMessage<UnitTransferMessage>();
+                            var msg = MessageProvider.GetMessage<UnitSendMessage>();
                             msg.sender = selectedSender;
                             msg.receiver = clickedOn;
                             msg.amount = (int)(selectedSender.Units * sendPercentage);

@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 1189529696200267934}
   - component: {fileID: 1189529696200267932}
   - component: {fileID: 1189529696200267935}
+  - component: {fileID: 1557573307234229444}
   m_Layer: 0
   m_Name: Star
   m_TagString: Untagged
@@ -119,7 +120,30 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   units: 0
+  owner: 4
   selectedOutline: {fileID: 4214667450294793053}
+  interval: 3
+--- !u!50 &1557573307234229444
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1189529696200267904}
+  m_BodyType: 1
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0
+  m_GravityScale: 0
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
 --- !u!1 &4214667450294793053
 GameObject:
   m_ObjectHideFlags: 0
