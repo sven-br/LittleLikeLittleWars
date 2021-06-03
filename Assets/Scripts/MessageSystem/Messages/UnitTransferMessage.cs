@@ -9,5 +9,5 @@ public class UnitTransferMessage : Message
 	public Star sender;
 	public Star receiver;
 	public int amount;
-	public Star.Owner owner;
+	public Star.StarOwner owner;
 }

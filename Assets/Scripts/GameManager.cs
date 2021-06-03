@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class GameManager : MonoBehaviour
+public class GameManager : MonoBehaviour, IMessageReceiver
 {
-    public Star[] stars;
+    private List<Star> stars;
 
-    void Update()
+    private void Start()
     {
-        CheckWinCondition();
+        stars = new List<Star>();
+        MessageManager.StartReceivingMessage<RegisterStarMessage>(this);
     }
 
     void CheckWinCondition()
@@ -24,6 +25,21 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        var activeScene = SceneManager.GetActiveScene();
+        SceneManager.LoadScene(activeScene.name);
+    }
+
+    void IMessageReceiver.MessageReceived(Message message)
+    {
+        if (message is RegisterStarMessage)
+        {
+            var registerStarMessage = message as RegisterStarMessage;
+            stars.Add(registerStarMessage.star);
+        }
+
+        else if (message is StarOwnerChangedMessage)
+        {
+            CheckWinCondition();
+        }
     }
 }
