@@ -47,6 +47,19 @@ public static class MessageManager
 		}
 	}
 
+	public static void Clear()
+	{
+		if (_messages != null)
+        {
+			_messages.Clear();
+		}
+
+		if (_receiverList != null)
+		{
+			_receiverList.Clear();
+		}
+	}
+
 	public static void SendMessage(Message message)
 	{
 		if (!_messages.ContainsKey(message.GetType())) return;

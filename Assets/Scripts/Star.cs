@@ -6,19 +6,20 @@ using TMPro;
 public class Star : MonoBehaviour, IMessageReceiver
 {
     [SerializeField] private int units = 0;
-    [SerializeField] private Owner owner = Owner.neutral;
+    [SerializeField] private StarOwner owner = StarOwner.neutral;
     [SerializeField] private GameObject selectedOutline = null;
-    [SerializeField] private Star[] neighbors = null;
     [SerializeField] private SpawnInterval interval = SpawnInterval.medium;
     private int tickcount = 0;
+    private List<Star> neighbors;
+    private bool registered = false;
 
-    Dictionary<Owner, Color> colormapping = new Dictionary<Owner, Color>()
+    Dictionary<StarOwner, Color> colormapping = new Dictionary<StarOwner, Color>()
 {
-    { Owner.player0, Color.red },
-    { Owner.player1, Color.yellow },
-    { Owner.player2, Color.blue },
-    { Owner.player3, Color.green },
-    { Owner.neutral, Color.grey }
+    { StarOwner.player0, Color.red },
+    { StarOwner.player1, Color.yellow },
+    { StarOwner.player2, Color.blue },
+    { StarOwner.player3, Color.green },
+    { StarOwner.neutral, Color.grey }
 };
 
     public enum SpawnInterval
@@ -28,7 +29,7 @@ public class Star : MonoBehaviour, IMessageReceiver
         slow,
     }
 
-    public enum Owner
+    public enum StarOwner
     {
         player0,
         player1,
@@ -37,15 +38,17 @@ public class Star : MonoBehaviour, IMessageReceiver
         neutral,
     }
 
-    private void SetOwner(Owner owner)
+    public StarOwner Owner
     {
-        this.owner = owner;
-        SetColour();
-    }
+        get { return owner; }
+        private set
+        {
+            owner = value;
+            SetColour();
 
-    public Owner getOwner()
-    {
-        return owner;
+            var message = MessageProvider.GetMessage<StarOwnerChangedMessage>();
+            MessageManager.SendMessage(message);
+        }
     }
 
     public int Units
@@ -71,9 +74,12 @@ public class Star : MonoBehaviour, IMessageReceiver
     }
     void Start()
     {
+        neighbors = new List<Star>();
+
         UpdateText();
         SetColour();
 
+        MessageManager.StartReceivingMessage<RegisterLinkMessage>(this);
         MessageManager.StartReceivingMessage<UnitTransferMessage>(this);
         MessageManager.StartReceivingMessage<StarSelectedMessage>(this);
         MessageManager.StartReceivingMessage<AllStarsUnselectedMessage>(this);
@@ -82,6 +88,13 @@ public class Star : MonoBehaviour, IMessageReceiver
 
     void Update()
     {
+        if (!registered)
+        {
+            registered = true;
+            var message = MessageProvider.GetMessage<RegisterStarMessage>();
+            message.star = this;
+            MessageManager.SendMessage(message);
+        }
     }
 
     void UpdateText()
@@ -106,20 +119,30 @@ public class Star : MonoBehaviour, IMessageReceiver
     private void IncreaseUnits(int amount)
     {
         Units += amount;
-        Debug.Log("star received " + amount + " units");
     }
 
     private void DecreaseUnits(int amount)
     {
         Units -= amount;
-        Debug.Log("star lost " + amount + " units");
     }
 
     void IMessageReceiver.MessageReceived(Message message)
     {
-        if (message.GetType() == typeof(UnitTransferMessage))
+        if (message is RegisterLinkMessage)
         {
-            var unitTransferMessage = (UnitTransferMessage)message;
+            var registerLinkMessage = message as RegisterLinkMessage;
+            var link = registerLinkMessage.link;
+            var neighbor = link.GetOtherStar(this);
+
+            if (neighbor != null)
+            {
+                neighbors.Add(neighbor);
+            }
+        }
+
+        else if (message is UnitTransferMessage)
+        {
+            var unitTransferMessage = message as UnitTransferMessage;
             if (unitTransferMessage.sender == this)
             {
                 DecreaseUnits(unitTransferMessage.amount);
@@ -129,7 +152,8 @@ public class Star : MonoBehaviour, IMessageReceiver
                 if (unitTransferMessage.owner == this.owner)
                 {
                     IncreaseUnits(unitTransferMessage.amount);
-                } else
+                }
+                else
                 {
                     int diff = this.units - unitTransferMessage.amount;
 
@@ -139,13 +163,13 @@ public class Star : MonoBehaviour, IMessageReceiver
                     }
                     else if (diff < 0)
                     {
-                        SetOwner(unitTransferMessage.owner);
+                        Owner = unitTransferMessage.owner;
                         this.Units = (-diff);
                     }
                     else
                     {
                         DecreaseUnits(unitTransferMessage.amount);
-                        SetOwner(Owner.neutral);
+                        Owner = StarOwner.neutral;
                     }
                         
                 }
@@ -153,24 +177,24 @@ public class Star : MonoBehaviour, IMessageReceiver
             }
         }
 
-        if (message.GetType() == typeof(StarSelectedMessage))
+        else if (message is StarSelectedMessage)
         {
-            var starSelectedMessage = (StarSelectedMessage)message;
+            var starSelectedMessage = message as StarSelectedMessage;
             if ((Object)starSelectedMessage.star == this)
             {
                 UpdateSelected(true);
             }
         }
 
-        if (message.GetType() == typeof(AllStarsUnselectedMessage))
+        else if (message is AllStarsUnselectedMessage)
         {
-            var allStarsUnselectedMessage = (AllStarsUnselectedMessage)message;
+            var allStarsUnselectedMessage = message as AllStarsUnselectedMessage;
             UpdateSelected(false);
         }
 
-        if (message.GetType() == typeof(TickMessage))
+        else if (message is TickMessage)
         {
-            if (owner != Owner.neutral)
+            if (owner != StarOwner.neutral)
             {
                 tickcount++;
                     if (tickcount == (int)interval)
@@ -179,28 +203,6 @@ public class Star : MonoBehaviour, IMessageReceiver
                         tickcount = 0;
                     }
                
-            }
-        }
-    }
-
-    void OnDrawGizmos()
-    {
-        foreach (var neighbor in neighbors)
-        {
-            if (neighbor != null)
-            {
-                var from = transform.position;
-                var to = neighbor.transform.position;
-                var dir = (to - from).normalized;
-                var right = Vector3.Cross(dir, new Vector3(0, 0, 1));
-                var offset = right.normalized * 0.1f;
-
-                from += offset;
-                to += offset;
-
-                Gizmos.color = Color.yellow;
-                Gizmos.DrawLine(from, to);
-                Gizmos.DrawLine(to, to + offset - dir);
             }
         }
     }

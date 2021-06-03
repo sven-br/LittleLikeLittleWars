@@ -4,8 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-public class StarClickedMessage : Message
+public class StarOwnerChangedMessage : Message
 {
-	public Star star;
-	public Star.StarOwner owner;
 }

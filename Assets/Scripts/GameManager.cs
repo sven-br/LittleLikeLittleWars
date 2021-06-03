@@ -3,27 +3,51 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class GameManager : MonoBehaviour
+public class GameManager : MonoBehaviour, IMessageReceiver
 {
-    public Star[] stars;
+    private List<Star> stars;
 
-    void Update()
+    private void Start()
     {
-        CheckWinCondition();
+        stars = new List<Star>();
+        MessageManager.StartReceivingMessage<RegisterStarMessage>(this);
+        MessageManager.StartReceivingMessage<StarOwnerChangedMessage>(this);
     }
 
     void CheckWinCondition()
     {
-        var owner = stars[0].getOwner();
+        Debug.Log("CheckWinCondition");
+        var owner = stars[0].Owner;
 
         foreach (var star in stars)
         {
-            if (star.getOwner() != owner)
+            if (star.Owner != owner)
             {
                 return;
             }
         }
 
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        var activeScene = SceneManager.GetActiveScene();
+        LoadScene(activeScene.name);
+    }
+
+    void IMessageReceiver.MessageReceived(Message message)
+    {
+        if (message is RegisterStarMessage)
+        {
+            var registerStarMessage = message as RegisterStarMessage;
+            stars.Add(registerStarMessage.star);
+        }
+
+        else if (message is StarOwnerChangedMessage)
+        {
+            CheckWinCondition();
+        }
+    }
+
+    void LoadScene(string name)
+    {
+        MessageManager.Clear();
+        SceneManager.LoadScene(name);
     }
 }
