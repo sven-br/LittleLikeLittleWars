@@ -9,6 +9,8 @@ public class Star : MonoBehaviour, IMessageReceiver
     [SerializeField] private Owner owner = Owner.neutral;
     [SerializeField] private GameObject selectedOutline = null;
     [SerializeField] private Star[] neighbors = null;
+    [SerializeField] private SpawnInterval interval = SpawnInterval.medium;
+    private int tickcount = 0;
 
     Dictionary<Owner, Color> colormapping = new Dictionary<Owner, Color>()
 {
@@ -18,6 +20,13 @@ public class Star : MonoBehaviour, IMessageReceiver
     { Owner.player3, Color.green },
     { Owner.neutral, Color.grey }
 };
+
+    public enum SpawnInterval
+    {
+        fast = 2,
+        medium,
+        slow,
+    }
 
     public enum Owner
     {
@@ -162,7 +171,15 @@ public class Star : MonoBehaviour, IMessageReceiver
         if (message.GetType() == typeof(TickMessage))
         {
             if (owner != Owner.neutral)
-                IncreaseUnits(1);
+            {
+                tickcount++;
+                    if (tickcount == (int)interval)
+                    {
+                        IncreaseUnits(1);
+                        tickcount = 0;
+                    }
+               
+            }
         }
     }
 
