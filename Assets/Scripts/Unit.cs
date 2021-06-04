@@ -46,18 +46,20 @@ public class Unit : MonoBehaviour, IMessageReceiver
 
             var unit = contact.collider.gameObject.GetComponent<Unit>();
 
-            if (unit != null && !collisionDetected) // hier schon checken ob der collision-Partner Freund oder Feind ist, statt owner mit in die SpaceFightMessage zu geben?
+            if (unit != null && unit.Owner != Owner && !(collisionDetected || unit.collisionDetected))
             {
                 collisionDetected = true;
                 var message = MessageProvider.GetMessage<SpaceFightMessage>();
-                message.amount = Amount;
-                message.owner = Owner;
-                message.opponent = unit;
+                message.opponent1 = this;
+                message.amount1 = Amount;
+                message.opponent2 = unit;
+                message.amount2 = unit.Amount;
                 MessageManager.SendMessage(message);
-                Debug.Log(Owner + ": Spacefightmessage sent. I have units: " + Amount);
+
             }
         }
     }
+
     private void SetColour()
     {
         SpriteRenderer renderer = GetComponent<SpriteRenderer>();
@@ -66,7 +68,7 @@ public class Unit : MonoBehaviour, IMessageReceiver
 
     private void ReduceAmount(int amount)
     {
-        if (Amount > amount) Amount -= amount; else Amount = 0;
+        Amount = Mathf.Max(Amount-amount,0);
     }
 
     void IMessageReceiver.MessageReceived(Message message)
@@ -74,12 +76,16 @@ public class Unit : MonoBehaviour, IMessageReceiver
         if (message is SpaceFightMessage)
         {
             var spaceFightMessage = message as SpaceFightMessage;
-            if (spaceFightMessage.owner != Owner && spaceFightMessage.opponent == this)
+            if (spaceFightMessage.opponent2 == this)
             {
-                Debug.Log(Owner + ": Amount is " + Amount);
-                Debug.Log(Owner + " Reducing amount by " + spaceFightMessage.amount);
-                ReduceAmount(spaceFightMessage.amount);
-                Debug.Log(Owner + " Amount is now " + Amount);
+                collisionDetected = true;
+                ReduceAmount(spaceFightMessage.amount1);
+                if (Amount < 1) Destroy(gameObject);
+            }
+            else if (spaceFightMessage.opponent1 == this)
+            {
+                collisionDetected = true;
+                ReduceAmount(spaceFightMessage.amount2);
                 if (Amount < 1) Destroy(gameObject);
             }
         }

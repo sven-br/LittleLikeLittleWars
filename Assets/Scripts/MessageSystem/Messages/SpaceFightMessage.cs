@@ -4,7 +4,9 @@ using UnityEngine;
 
 public class SpaceFightMessage : Message
 {
-	public int amount;
-	public ObjectOwner owner;
-	public Unit opponent;
+	public Unit opponent1;
+	public int amount1;
+
+	public Unit opponent2;
+	public int amount2;
 }
