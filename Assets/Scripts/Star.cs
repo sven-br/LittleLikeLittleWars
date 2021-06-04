@@ -36,7 +36,7 @@ public class Star : MonoBehaviour, IMessageReceiver
     public int Units
     {
         get { return units; }
-        private set { units = value; UpdateText(); }
+        private set { if (value > 0) { units = value; } else units = 0; UpdateText(); }
     }
 
     private void SetColour()
@@ -107,6 +107,7 @@ public class Star : MonoBehaviour, IMessageReceiver
     private void DecreaseUnits(int amount)
     {
         Units -= amount;
+        if (Units < 0) Units = 0;
     }
 
     void IMessageReceiver.MessageReceived(Message message)
@@ -183,11 +184,20 @@ public class Star : MonoBehaviour, IMessageReceiver
             if (owner != ObjectOwner.neutral)
             {
                 tickcount++;
-                    if (tickcount == (int)interval)
-                    {
-                        IncreaseUnits(1);
-                        tickcount = 0;
-                    }
+                if (tickcount == (int)interval)
+                {
+                    IncreaseUnits(1);
+                    tickcount = 0;
+                }
+                if (Owner == ObjectOwner.player1 && Units >= 8) // only for testing, NPCMAnager will take this functionality
+                {
+                    var msg = MessageProvider.GetMessage<UnitSendMessage>();
+                    msg.sender = this;
+                    msg.receiver = neighbors[Random.Range(0, neighbors.Count)];
+                    msg.amount = 8;
+                    msg.owner = Owner;
+                    MessageManager.SendMessage(msg);
+                }
                
             }
         }

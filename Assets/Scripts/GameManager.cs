@@ -27,7 +27,7 @@ public class GameManager : MonoBehaviour, IMessageReceiver
             }
         }
 
-        LoadScene("GameScene");
+        LoadScene("MainMenu");
     }
 
     void IMessageReceiver.MessageReceived(Message message)
