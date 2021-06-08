@@ -7,7 +7,6 @@ public class Star : MonoBehaviour, IMessageReceiver
 {
     [SerializeField] private int units = 0;
     [SerializeField] private ObjectOwner owner = ObjectOwner.neutral;
-    [SerializeField] private GameObject selectedOutline = null;
     [SerializeField] private SpawnInterval interval = SpawnInterval.medium;
     private int tickcount = 0;
     private List<Star> neighbors;
@@ -93,7 +92,8 @@ public class Star : MonoBehaviour, IMessageReceiver
 
     void UpdateSelected(bool selected)
     {
-        selectedOutline.SetActive(selected);
+        SpriteRenderer renderer = GetComponent<SpriteRenderer>();
+        renderer.material.SetFloat("Selected", selected ? 1.0f : 0.0f);
     }
 
     void OnMouseDown()
