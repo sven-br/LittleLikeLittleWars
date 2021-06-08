@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class UnitManager : MonoBehaviour, IMessageReceiver
 {
-    [SerializeField] private GameObject unitPrefab;
+    [SerializeField] private GameObject unitPrefab = null;
 
     void Start()
     {

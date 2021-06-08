@@ -64,22 +64,19 @@ public class InputManager : MonoBehaviour, IMessageReceiver
                     break;
 
                 case StarSelectionState.SenderSelected:
+                    if (selectedSender.HasNeighbor(clickedOn) && selectedSender.Units > 0)
                     {
-                        if (selectedSender.HasNeighbor(clickedOn) && selectedSender.Units > 0)
-                        {
-                            var msg = MessageProvider.GetMessage<UnitSendMessage>();
-                            msg.sender = selectedSender;
-                            msg.receiver = clickedOn;
-                            msg.amount = (int)(selectedSender.Units * sendPercentage);
-                            msg.owner = selectedSender.Owner;
-                            MessageManager.SendMessage(msg);
+                        var msg = MessageProvider.GetMessage<UnitSendMessage>();
+                        msg.sender = selectedSender;
+                        msg.receiver = clickedOn;
+                        msg.amount = (int)(selectedSender.Units * sendPercentage);
+                        msg.owner = selectedSender.Owner;
+                        MessageManager.SendMessage(msg);
 
-                            var starUnselectedMessage = MessageProvider.GetMessage<AllStarsUnselectedMessage>();
-                            MessageManager.SendMessage(starUnselectedMessage);
-                        }
-
-                        break;
+                        var starUnselectedMessage = MessageProvider.GetMessage<AllStarsUnselectedMessage>();
+                        MessageManager.SendMessage(starUnselectedMessage);
                     }
+                    break;
 
                 default:
                     Debug.Log("Nothing happened upon click in the current input-state!");
