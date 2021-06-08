@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class UnitManager : MonoBehaviour, IMessageReceiver
 {
-    [SerializeField] private GameObject unitPrefab;
+    [SerializeField] private GameObject unitPrefab = null;
 
     void Start()
     {
@@ -27,6 +27,7 @@ public class UnitManager : MonoBehaviour, IMessageReceiver
             unit.Owner = unitSendMessage.sender.Owner;
             unit.Amount = unitSendMessage.amount;
             unit.transform.position = unitSendMessage.sender.transform.position;
+            unit.transform.localPosition = new Vector3(unit.transform.localPosition.x, unit.transform.localPosition.y, 0);
             unit.Direction = (unitSendMessage.receiver.transform.position - unitSendMessage.sender.transform.position).normalized;
         }
     }

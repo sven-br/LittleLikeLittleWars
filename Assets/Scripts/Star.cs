@@ -42,7 +42,12 @@ public class Star : MonoBehaviour, IMessageReceiver
     private void SetColour()
     {
         SpriteRenderer renderer = GetComponent<SpriteRenderer>();
-        renderer.color = ColourMapping.colormapping[owner];
+        var color = ColourMapping.colormapping[owner];
+        var vec = new Vector3(color.r, color.g, color.b);
+        renderer.material.SetVector("PlayerColor", vec);
+
+        var ownedByPlayer = Owner == ObjectOwner.neutral ? 0.0f : 1.0f;
+        renderer.material.SetFloat("OwnedByPlayer", ownedByPlayer);
     }
 
     public bool HasNeighbor(Star other)
@@ -97,6 +102,7 @@ public class Star : MonoBehaviour, IMessageReceiver
         message.star = this;
         message.owner = owner;
         MessageManager.SendMessage(message);
+        Debug.Log("xxx");
     }
 
     private void IncreaseUnits(int amount)

@@ -25,6 +25,7 @@ public class InputManager : MonoBehaviour, IMessageReceiver
     void Start()
     {
         MessageManager.StartReceivingMessage<StarClickedMessage>(this);
+        MessageManager.StartReceivingMessage<AllStarsUnselectedMessage>(this);
     }
 
     void Update()
@@ -34,9 +35,10 @@ public class InputManager : MonoBehaviour, IMessageReceiver
 
     void IMessageReceiver.MessageReceived(Message message)
     {
-        var starClickedMessage = (StarClickedMessage)message;
-        if (starClickedMessage != null)
+        if (message is StarClickedMessage)
         {
+            var starClickedMessage = message as StarClickedMessage;
+
             Star clickedOn = starClickedMessage.star;
             ObjectOwner owner = starClickedMessage.owner;
             Debug.Log("Star was clicked: " + clickedOn);
@@ -62,24 +64,20 @@ public class InputManager : MonoBehaviour, IMessageReceiver
                     break;
 
                 case StarSelectionState.SenderSelected:
+                    if (selectedSender.HasNeighbor(clickedOn) && selectedSender.Units > 0)
                     {
-                        if (selectedSender.HasNeighbor(clickedOn))
-                        {
-                            var msg = MessageProvider.GetMessage<UnitSendMessage>();
-                            msg.sender = selectedSender;
-                            msg.receiver = clickedOn;
-                            msg.amount = (int)(selectedSender.Units * sendPercentage);
-                            msg.owner = selectedSender.Owner;
-                            MessageManager.SendMessage(msg);
-                            starSelectionState = StarSelectionState.Unselected;
+                        var msg = MessageProvider.GetMessage<UnitSendMessage>();
+                        msg.sender = selectedSender;
+                        msg.receiver = clickedOn;
+                        msg.amount = (int)(selectedSender.Units * sendPercentage);
+                        msg.owner = selectedSender.Owner;
+                        MessageManager.SendMessage(msg);
 
-                            var starUnselectedMessage = MessageProvider.GetMessage<AllStarsUnselectedMessage>();
-                            MessageManager.SendMessage(starUnselectedMessage);
-                        }
-
-                        break;
+                        var starUnselectedMessage = MessageProvider.GetMessage<AllStarsUnselectedMessage>();
+                        MessageManager.SendMessage(starUnselectedMessage);
                     }
-                    
+                    break;
+
                 default:
                     Debug.Log("Nothing happened upon click in the current input-state!");
                     break;
@@ -87,6 +85,12 @@ public class InputManager : MonoBehaviour, IMessageReceiver
 
 
             Debug.Log("Current StarSelectedState: " + starSelectionState);
+        }
+
+        else if (message is AllStarsUnselectedMessage)
+        {
+            starSelectionState = StarSelectionState.Unselected;
+            Debug.Log("UNSEL");
         }
     }
 }

@@ -46,7 +46,7 @@ public class Link : MonoBehaviour
         var pos0 = new Vector3(position0.x, position0.y, 0);
         var pos1 = new Vector3(position1.x, position1.y, 0);
 
-        var radius = 0.1f;
+        var radius = 0.2f;
         dir *= radius;
         right *= radius;
 
