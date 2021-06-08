@@ -97,6 +97,7 @@ public class Star : MonoBehaviour, IMessageReceiver
         message.star = this;
         message.owner = owner;
         MessageManager.SendMessage(message);
+        Debug.Log("xxx");
     }
 
     private void IncreaseUnits(int amount)

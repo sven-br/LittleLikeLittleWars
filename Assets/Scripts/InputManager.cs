@@ -93,6 +93,7 @@ public class InputManager : MonoBehaviour, IMessageReceiver
         else if (message is AllStarsUnselectedMessage)
         {
             starSelectionState = StarSelectionState.Unselected;
+            Debug.Log("UNSEL");
         }
     }
 }
