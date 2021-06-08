@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class Unit : MonoBehaviour, IMessageReceiver
 {
@@ -8,7 +9,7 @@ public class Unit : MonoBehaviour, IMessageReceiver
     public ObjectOwner Owner { get; set; }
     public Star Sender { get; set; }
     public int Amount { get; set; }
-    private bool collisionDetected = false; // Stars brauchen das auch, für den Fall dass zwei Units gleichzeitig mit dem star colliden?
+    private bool collisionDetected = false;
 
     void Start()
     {
@@ -25,6 +26,11 @@ public class Unit : MonoBehaviour, IMessageReceiver
     private void FixedUpdate()
     {
         collisionDetected = false;
+    }
+    void UpdateText()
+    {
+        var text = GetComponentInChildren<TextMeshProUGUI>();
+        text.text = Amount.ToString();
     }
 
     void OnCollisionEnter2D(Collision2D collision)
@@ -81,12 +87,14 @@ public class Unit : MonoBehaviour, IMessageReceiver
                 collisionDetected = true;
                 ReduceAmount(spaceFightMessage.amount1);
                 if (Amount < 1) Destroy(gameObject);
+                UpdateText();
             }
             else if (spaceFightMessage.opponent1 == this)
             {
                 collisionDetected = true;
                 ReduceAmount(spaceFightMessage.amount2);
                 if (Amount < 1) Destroy(gameObject);
+                UpdateText();
             }
         }
     }
