@@ -18,6 +18,7 @@ public class ResizeListener : MonoBehaviour
 
         if (size.width != width || size.height != height)
         {
+            Debug.Log("resize event");
             width = (int)size.width;
             height = (int)size.height;
             var message = MessageProvider.GetMessage<ViewportResizeMessage>();

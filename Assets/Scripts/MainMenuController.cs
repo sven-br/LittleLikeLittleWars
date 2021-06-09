@@ -7,11 +7,17 @@ public class MainMenuController : MonoBehaviour
 {
     public void PlayGame()
     {
-        SceneManager.LoadScene("GameScene");
+        LoadScene("Level1");
     }
 
     public void ExitGame()
     {
         Application.Quit();
+    }
+
+    public static void LoadScene(string name)
+    {
+        MessageManager.Clear();
+        SceneManager.LoadScene(name);
     }
 }

@@ -18,6 +18,7 @@ public class BackgroundResizer : MonoBehaviour, IMessageReceiver
     {
         if (message is ViewportResizeMessage)
         {
+            Debug.Log("resize background");
             var viewportResizeMessage = message as ViewportResizeMessage;
             var width = (float)viewportResizeMessage.width;
             var height = (float)viewportResizeMessage.height;

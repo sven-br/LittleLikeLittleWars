@@ -18,6 +18,7 @@ public class GameManager : MonoBehaviour, IMessageReceiver
     {
         Debug.Log("CheckWinCondition");
         var owner = stars[0].Owner;
+        //var win = owner == ObjectOwner.player0;
 
         foreach (var star in stars)
         {
@@ -27,7 +28,7 @@ public class GameManager : MonoBehaviour, IMessageReceiver
             }
         }
 
-        LoadScene("MainMenu");
+        MainMenuController.LoadScene("MainMenu");
     }
 
     void IMessageReceiver.MessageReceived(Message message)
@@ -42,11 +43,5 @@ public class GameManager : MonoBehaviour, IMessageReceiver
         {
             CheckWinCondition();
         }
-    }
-
-    void LoadScene(string name)
-    {
-        MessageManager.Clear();
-        SceneManager.LoadScene(name);
     }
 }
