@@ -7,7 +7,7 @@ public class MainMenuController : MonoBehaviour
 {
     public void PlayGame()
     {
-        LoadScene("Level1");
+        LoadScene("Level2");
     }
 
     public void ExitGame()
