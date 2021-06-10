@@ -19,7 +19,7 @@ public class Unit : MonoBehaviour, IMessageReceiver
 
     void Update()
     {
-        var speed = 0.3f;
+        var speed = 0.5f;
         var velocity = Direction * Time.deltaTime * speed;
         transform.Translate(velocity);
     }

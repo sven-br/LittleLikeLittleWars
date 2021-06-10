@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour, IMessageReceiver
 {
@@ -18,7 +17,7 @@ public class GameManager : MonoBehaviour, IMessageReceiver
     {
         Debug.Log("CheckWinCondition");
         var owner = stars[0].Owner;
-        //var win = owner == ObjectOwner.player0;
+        var win = owner == ObjectOwner.player0;
 
         foreach (var star in stars)
         {
@@ -28,7 +27,16 @@ public class GameManager : MonoBehaviour, IMessageReceiver
             }
         }
 
-        MainMenuController.LoadScene("MainMenu");
+        if (win)
+        {
+            var message = MessageProvider.GetMessage<NextSceneMessage>();
+            MessageManager.SendMessage(message);
+        }
+        else
+        {
+            var message = MessageProvider.GetMessage<LevelFailedMessage>();
+            MessageManager.SendMessage(message);
+        }
     }
 
     void IMessageReceiver.MessageReceived(Message message)
