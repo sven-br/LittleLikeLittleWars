@@ -4,6 +4,11 @@ using UnityEngine;
 
 public class BackgroundResizer : MonoBehaviour, IMessageReceiver
 {
+    void Awake()
+    {
+        GetComponent<MeshRenderer>().sharedMaterial.color = Color.white;
+    }
+
     void Start()
     {
         MessageManager.StartReceivingMessage<ViewportResizeMessage>(this);

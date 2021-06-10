@@ -14,8 +14,8 @@ public class LevelTransitionManager : MonoBehaviour, IMessageReceiver
     void Start()
     {
         DontDestroyOnLoad(gameObject);
-        SceneManager.sceneLoaded += this.OnLevelLoaded;
         StartReceivingMessages();
+        SceneManager.sceneLoaded += this.OnSceneLoaded;
     }
 
     void Update()
@@ -36,7 +36,7 @@ public class LevelTransitionManager : MonoBehaviour, IMessageReceiver
         }
     }
 
-    public void OnLevelLoaded(Scene scene, LoadSceneMode sceneMode)
+    public void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         StartReceivingMessages();
     }
@@ -53,13 +53,16 @@ public class LevelTransitionManager : MonoBehaviour, IMessageReceiver
 
         switch (currentSceneName)
         {
+            case "SplashScreen":
+                LoadScene("MainMenu");
+                break;
             case "MainMenu":
                 LoadScene("Level" + firstLevelNumber);
                 break;
             // is currentSceneName the name of a level?
             case var val when new Regex(@"^Level[0-9]+$").IsMatch(val):
                 {
-                    var currentLevelNumberString = new Regex(@"^Level([0-9])+$").Matches(val)[1].Value;
+                    var currentLevelNumberString = new Regex(@"^Level([0-9]+)$").Split(val)[1];
                     var currentLevelNumber = int.Parse(currentLevelNumberString);
 
                     if (currentLevelNumber != lastLevelNumber)
