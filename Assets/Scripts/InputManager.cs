@@ -76,6 +76,11 @@ public class InputManager : MonoBehaviour, IMessageReceiver
                         var starUnselectedMessage = MessageProvider.GetMessage<AllStarsUnselectedMessage>();
                         MessageManager.SendMessage(starUnselectedMessage);
                     }
+                    else
+                    {
+                        var starUnselectedMessage = MessageProvider.GetMessage<AllStarsUnselectedMessage>();
+                        MessageManager.SendMessage(starUnselectedMessage);
+                    }
                     break;
 
                 default:

@@ -4,6 +4,11 @@ using UnityEngine;
 
 public class BackgroundResizer : MonoBehaviour, IMessageReceiver
 {
+    void Awake()
+    {
+        GetComponent<MeshRenderer>().sharedMaterial.color = Color.white;
+    }
+
     void Start()
     {
         MessageManager.StartReceivingMessage<ViewportResizeMessage>(this);
@@ -18,6 +23,7 @@ public class BackgroundResizer : MonoBehaviour, IMessageReceiver
     {
         if (message is ViewportResizeMessage)
         {
+            Debug.Log("resize background");
             var viewportResizeMessage = message as ViewportResizeMessage;
             var width = (float)viewportResizeMessage.width;
             var height = (float)viewportResizeMessage.height;
