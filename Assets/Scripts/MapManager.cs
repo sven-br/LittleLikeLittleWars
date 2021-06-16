@@ -33,6 +33,6 @@ public class MapManager : MonoBehaviour, IMessageReceiver
 
         var newMapState = MessageProvider.GetMessage<MapChangedMessage>();
         newMapState.mapstate = mapstate;
-        MessageManager.SendMessage(message);
+        MessageManager.SendMessage(newMapState);
     }
 }
