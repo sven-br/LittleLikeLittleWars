@@ -15,6 +15,8 @@ public class TickManager : MonoBehaviour
 
     void Update()
     {
+        
+
         if (elapsedTime + intervalSeconds < Time.time)
         {
             elapsedTime += intervalSeconds;

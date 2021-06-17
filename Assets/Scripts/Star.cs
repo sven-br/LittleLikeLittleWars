@@ -5,12 +5,9 @@ using TMPro;
 
 public class Star : MonoBehaviour, IMessageReceiver
 {
-    [SerializeField] private int units = 0;
-    [SerializeField] private ObjectOwner owner = ObjectOwner.neutral;
-    [SerializeField] private SpawnInterval interval = SpawnInterval.medium;
-    private int tickcount = 0;
-    private List<Star> neighbors;
-    private bool registered = false;
+    [SerializeField] public int units = 0;
+    [SerializeField] public ObjectOwner owner = ObjectOwner.neutral;
+    [SerializeField] public SpawnInterval interval = SpawnInterval.medium;
 
     public enum SpawnInterval
     {
@@ -49,15 +46,6 @@ public class Star : MonoBehaviour, IMessageReceiver
         renderer.material.SetFloat("OwnedByPlayer", ownedByPlayer);
     }
 
-    public bool HasNeighbor(Star other)
-    {
-        foreach (var neighbor in neighbors)
-        {
-            if (neighbor == other)
-                return true;
-        }
-        return false;
-    }
     void Start()
     {
         neighbors = new List<Star>();
@@ -65,23 +53,13 @@ public class Star : MonoBehaviour, IMessageReceiver
         UpdateText();
         SetColour();
 
-        MessageManager.StartReceivingMessage<RegisterLinkMessage>(this);
-        MessageManager.StartReceivingMessage<UnitReceiveMessage>(this);
         MessageManager.StartReceivingMessage<UnitSendMessage>(this);
         MessageManager.StartReceivingMessage<StarSelectedMessage>(this);
         MessageManager.StartReceivingMessage<AllStarsUnselectedMessage>(this);
-        MessageManager.StartReceivingMessage<TickMessage>(this);
     }
 
     void Update()
     {
-        if (!registered)
-        {
-            registered = true;
-            var message = MessageProvider.GetMessage<RegisterStarMessage>();
-            message.star = this;
-            MessageManager.SendMessage(message);
-        }
     }
 
     void UpdateText()
@@ -118,19 +96,7 @@ public class Star : MonoBehaviour, IMessageReceiver
 
     void IMessageReceiver.MessageReceived(Message message)
     {
-        if (message is RegisterLinkMessage)
-        {
-            var registerLinkMessage = message as RegisterLinkMessage;
-            var link = registerLinkMessage.link;
-            var neighbor = link.GetOtherStar(this);
-
-            if (neighbor != null)
-            {
-                neighbors.Add(neighbor);
-            }
-        }
-
-        else if (message is UnitReceiveMessage)
+        if (message is UnitReceiveMessage)
         {
             var unitReceiveMessage = message as UnitReceiveMessage;
             

@@ -4,9 +4,8 @@ using UnityEngine;
 
 public class Link : MonoBehaviour
 {
-    [SerializeField] private Star star0 = null;
-    [SerializeField] private Star star1 = null;
-    private bool registered = false;
+    [SerializeField] public Star star0 = null;
+    [SerializeField] public Star star1 = null;
 
     void Start()
     {
@@ -15,13 +14,6 @@ public class Link : MonoBehaviour
 
     void Update()
     {
-        if (!registered)
-        {
-            registered = true;
-            var message = MessageProvider.GetMessage<RegisterLinkMessage>();
-            message.link = this;
-            MessageManager.SendMessage(message);
-        }
     }
 
     public Star GetOtherStar(Star that)
