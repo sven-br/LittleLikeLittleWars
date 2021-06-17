@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 public class UnitReceiveMessage : Message
 {
-	public Star receiver;
+	public int receiverID;
 	public int amount;
 	public ObjectOwner owner;
 }

@@ -6,4 +6,6 @@ using System.Threading.Tasks;
 
 public class StarOwnerChangedMessage : Message
 {
+    public int id;
+    public ObjectOwner owner;
 }

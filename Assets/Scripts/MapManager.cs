@@ -57,10 +57,38 @@ public class MapManager : MonoBehaviour, IMessageReceiver
         switch (message)
         {
             case StarOwnerChangedMessage starownerchangedmsg:
+                StarOwnerChangedMessage ownermessage = (StarOwnerChangedMessage)message;
+                mapState.StarState[ownermessage.id].owner = ownermessage.owner;
                 break;
             case UnitSendMessage unitsendmsg:
                 break;
             case UnitReceiveMessage unitreceivemsg:
+                var startoupdate = mapState.StarState[unitreceivemsg.receiverID];
+
+                if (unitreceivemsg.owner == startoupdate.owner)
+                {
+                    startoupdate.units += unitreceivemsg.amount;
+                }
+                else
+                {
+                    int diff = startoupdate.units - unitreceivemsg.amount;
+
+                    if (diff > 0)
+                    {
+                        startoupdate.units -= unitreceivemsg.amount;
+                    }
+                    else if (diff < 0)
+                    {
+                        startoupdate.owner = unitreceivemsg.owner;
+                        startoupdate.units = (-diff);
+                    }
+                    else
+                    {
+                        startoupdate.units -= unitreceivemsg.amount;
+                        startoupdate.owner = ObjectOwner.neutral;
+                    }
+
+                }
                 break;
             case SpaceFightMessage spacefightmsg:
                 break;
