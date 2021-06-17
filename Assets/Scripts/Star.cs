@@ -8,6 +8,7 @@ public class Star : MonoBehaviour, IMessageReceiver
     [SerializeField] public int units = 0;
     [SerializeField] public ObjectOwner owner = ObjectOwner.neutral;
     [SerializeField] public SpawnInterval interval = SpawnInterval.medium;
+    public int Id {  get; set; } = 1;
 
     public enum SpawnInterval
     {
