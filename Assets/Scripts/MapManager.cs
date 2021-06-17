@@ -26,28 +26,28 @@ public class MapManager : MonoBehaviour, IMessageReceiver
     {
         mapState = new MapState {
             stars = InitializeStars(stars),
-            links = InitializeLinks(link),
+            links = InitializeLinks(links),
         };
     }
 
     StarState[] InitializeStars(Star[] stars)
     {
         var starState = new StarState[stars.Length];
-        for (var i = 0; i < star.Length; ++i)
+        for (var i = 0; i < stars.Length; ++i)
         {
-            starState[i] = StarState(i, star);
-            // star.setId(i);
+            stars[i].Id = i;
+            starState[i] = new StarState(i, stars[i]);
         }
         return starState;
     }
 
-    LinkState[] InitializeLinks(Link[] links)
+    HashSet<(int, int)> InitializeLinks(Link[] links)
     {
-        var linkState = new LinkState();
-        int i = 0;
+        var linkState = new HashSet<(int, int)>();
         foreach (var link in links)
         {
-            linkState.Add(link.star0.id, link.star1.id);
+            linkState.Add((link.star0.Id, link.star1.Id));
+            linkState.Add((link.star1.Id, link.star0.Id));
         }
         return linkState;
     }
@@ -94,9 +94,9 @@ public class MapManager : MonoBehaviour, IMessageReceiver
                 break;
         }
 
-        var newMapState = MessageProvider.GetMessage<MapChangedMessage>();
-        newMapState.mapState = mapstate;
-        MessageManager.SendMessage(newMapState);
+        // var newMapState = MessageProvider.GetMessage<MapChangedMessage>();
+        // newMapState.mapstate = mapstate;
+        // MessageManager.SendMessage(newMapState);
     }
 
         // MessageManager.StartReceivingMessage<TickMessage>(this);

@@ -2,35 +2,34 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace State {
-    using StarId = System.Int32;
-    using StarIdPair = System.Tuple<StarId, StarId>;
-    using LinkState = System.Collections.Generic.HashSet<StarIdPair>;
+public struct StarState
+{
+    public int id;
+    public int units;
+    public ObjectOwner owner;
+    public Star.SpawnInterval interval;
 
-    public struct StarState
+    public StarState(int _id, Star star)
     {
-        StarId id;
-        int units;
-        ObjectOwner owner;
-        Star.SpawnInterval interval;
+        id = _id;
+        units = star.units;
+        owner = star.owner;
+        interval = star.interval;
+    }
+}
 
-        public StarState(StarId id, Star star)
-        {
-            units = star.units;
-            owner = star.owner;
-            interval = star.interval;
-        }
+public struct MapState
+{
+    public StarState[] stars;
+    public HashSet<(int, int)> links;
+
+    public bool AreStarsLinked(int a, int b)
+    {
+        return links.Contains((a, b));
     }
 
-    public struct MapState
+    public StarState GetStarStateById(int starId)
     {
-        public StarState[] stars;
-        public LinkState links;
-
-        bool AreStarsLinked(StarId a, StarId b)
-        {
-            return links.Contains((a, b));
-        }
+        return stars[starId];
     }
-
 }

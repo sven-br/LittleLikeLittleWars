@@ -8,4 +8,6 @@ public class StarOwnerChangedMessage : Message
 {
     public int id;
     public ObjectOwner owner;
+
+    public MapState state;
 }

@@ -4,24 +4,20 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour, IMessageReceiver
 {
-    private List<Star> stars;
-
     private void Start()
     {
-        stars = new List<Star>();
-        MessageManager.StartReceivingMessage<RegisterStarMessage>(this);
         MessageManager.StartReceivingMessage<StarOwnerChangedMessage>(this);
     }
 
-    void CheckWinCondition()
+    void CheckWinCondition(StarState[] stars)
     {
         Debug.Log("CheckWinCondition");
-        var owner = stars[0].Owner;
+        var owner = stars[0].owner;
         var win = owner == ObjectOwner.player0;
 
         foreach (var star in stars)
         {
-            if (star.Owner != owner)
+            if (star.owner != owner)
             {
                 return;
             }
@@ -41,15 +37,11 @@ public class GameManager : MonoBehaviour, IMessageReceiver
 
     void IMessageReceiver.MessageReceived(Message message)
     {
-        if (message is RegisterStarMessage)
+        if (message is StarOwnerChangedMessage)
         {
-            var registerStarMessage = message as RegisterStarMessage;
-            stars.Add(registerStarMessage.star);
-        }
-
-        else if (message is StarOwnerChangedMessage)
-        {
-            CheckWinCondition();
+            var starOwnerChangedMessage = (StarOwnerChangedMessage) message;
+            var stars = starOwnerChangedMessage.state.stars;
+            CheckWinCondition(stars);
         }
     }
 }
