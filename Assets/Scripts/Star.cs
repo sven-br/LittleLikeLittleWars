@@ -24,9 +24,6 @@ public class Star : MonoBehaviour, IMessageReceiver
         {
             owner = value;
             SetColour();
-
-            var message = MessageProvider.GetMessage<StarOwnerChangedMessage>();
-            MessageManager.SendMessage(message);
         }
     }
 
@@ -172,6 +169,18 @@ public class Star : MonoBehaviour, IMessageReceiver
                     MessageManager.SendMessage(msg);
                 }
                
+            }
+        }
+
+        if (message is StarOwnerChangedMessage)
+        {
+            var starOwnerChangedMessage = (StarOwnerChangedMessage) message;
+            var id = starOwnerChangedMessage.starId;
+            var owner = starOwnerChangedMessage.starOwner;
+
+            if (Id == id)
+            {
+                Owner = owner;
             }
         }
     }

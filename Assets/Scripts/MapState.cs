@@ -4,10 +4,10 @@ using UnityEngine;
 
 public struct StarState
 {
-    int id;
-    int units;
-    ObjectOwner owner;
-    Star.SpawnInterval interval;
+    public int id;
+    public int units;
+    public ObjectOwner owner;
+    public Star.SpawnInterval interval;
 
     public StarState(int _id, Star star)
     {
@@ -23,12 +23,12 @@ public struct MapState
     public StarState[] stars;
     public HashSet<(int, int)> links;
 
-    bool AreStarsLinked(int a, int b)
+    public bool AreStarsLinked(int a, int b)
     {
         return links.Contains((a, b));
     }
 
-    StarState GetStarStateById(int starId)
+    public StarState GetStarStateById(int starId)
     {
         return stars[starId];
     }

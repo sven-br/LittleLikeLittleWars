@@ -66,9 +66,9 @@ public class MapManager : MonoBehaviour, IMessageReceiver
                 break;
         }
 
-        var newMapState = MessageProvider.GetMessage<MapChangedMessage>();
-        newMapState.mapState = mapstate;
-        MessageManager.SendMessage(newMapState);
+        // var newMapState = MessageProvider.GetMessage<MapChangedMessage>();
+        // newMapState.mapstate = mapstate;
+        // MessageManager.SendMessage(newMapState);
     }
 
         // MessageManager.StartReceivingMessage<TickMessage>(this);
