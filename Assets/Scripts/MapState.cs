@@ -27,4 +27,9 @@ public struct MapState
     {
         return links.Contains((a, b));
     }
+
+    StarState GetStarStateById(int starId)
+    {
+        return stars[starId];
+    }
 }
